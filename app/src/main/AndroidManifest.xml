@@ -21,7 +21,7 @@
 
   <uses-sdk
     android:minSdkVersion="12"
-    android:targetSdkVersion="12"/>
+    android:targetSdkVersion="34"/>
 
   <uses-feature android:name="android.hardware.usb.host"/>
 
