@@ -47,7 +47,8 @@
       android:configChanges="orientation"
       android:label="@string/launcher_label"
       android:launchMode="singleTask"
-      android:screenOrientation="sensorLandscape">
+      android:screenOrientation="sensorLandscape"
+      android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
@@ -62,10 +63,12 @@
         android:resource="@xml/device_filter"/>
     </activity>
     <activity
+      android:exported="true"
       android:name="com.remoteyourcam.usb.activities.AppSettingsActivity"
       android:label="@string/activity_app_settings_title"
       android:screenOrientation="sensorLandscape"/>
     <activity
+      android:exported="true"
       android:name="org.acra.CrashReportDialog"
       android:excludeFromRecents="true"
       android:finishOnTaskLaunch="true"
