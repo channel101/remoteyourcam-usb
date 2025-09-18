@@ -32,14 +32,49 @@ jobs:
         restore-keys: |
           gradle-${{ runner.os }}-
 
+    - name: Generate gradle wrapper if missing
+      run: |
+        if [ ! -f "./gradlew" ]; then
+          echo "gradlew not found, generating..."
+          gradle wrapper
+        fi
+
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
+
+    # === secrets에서 password 값 받아 keystore 생성 ===
+    - name: Create keystore file
+      run: |
+        keytool -genkeypair \
+          -alias ${{ secrets.SIGNING_KEY_ALIAS }} \
+          -keyalg RSA \
+          -keysize 2048 \
+          -validity 10000 \
+          -keystore release.keystore \
+          -storepass ${{ secrets.SIGNING_KEYSTORE_PASSWORD }} \
+          -keypass ${{ secrets.SIGNING_KEY_PASSWORD }} \
+          -dname "CN=Your Name, OU=Your Team, O=Your Company, L=Your City, S=Your State, C=KR"
 
     - name: Build APK
       run: ./gradlew assembleRelease
 
-    - name: Upload APK
+    - name: Sign APK
+      run: |
+        jarsigner \
+          -verbose \
+          -sigalg SHA1withRSA \
+          -digestalg SHA1 \
+          -keystore release.keystore \
+          -storepass ${{ secrets.SIGNING_KEYSTORE_PASSWORD }} \
+          -keypass ${{ secrets.SIGNING_KEY_PASSWORD }} \
+          app/build/outputs/apk/release/app-release-unsigned.apk ${{ secrets.SIGNING_KEY_ALIAS }}
+
+    - name: Verify signed APK
+      run: |
+        jarsigner -verify app/build/outputs/apk/release/app-release-unsigned.apk
+
+    - name: Upload signed APK
       uses: actions/upload-artifact@v4
       with:
         name: app-release-apk
-        path: app/build/outputs/apk/release/*.apk
+        path: app/build/outputs/apk/release/app-release-unsigned.apk
