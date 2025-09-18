@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import org.acra.ACRA;
+import org.acra.builder.ReportBuilder;
 
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
@@ -116,7 +117,10 @@ public class NikonGetLiveViewImageCommand extends NikonCommand {
                 try {
                     haveAddedDumpToAcra = true;
                     String hex = PacketUtil.hexDumpToString(b.array(), start, length < 728 ? length : 728);
-                    ACRA.errorReporter.putCustomData("liveview hexdump", hex);
+                    ACRA.getErrorReporter().handleException(
+                        null,
+                        new ReportBuilder().customData("liveview hexdump", hex)
+                    );     
                 } catch (Throwable e) {
                     // no fail
                 }
