@@ -191,7 +191,7 @@ public abstract class PtpCamera implements Camera {
         }
         if (AppConfig.USE_ACRA) {
             try {
-                ErrorReporter.getInstance().putCustomData("deviceInfo", deviceInfo.toString());
+              ACRA.getErrorReporter().putCustomData("deviceInfo", deviceInfo.toString());
             } catch (Throwable e) {
                 // no fail
             }
