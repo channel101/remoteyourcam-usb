@@ -53,28 +53,30 @@ jobs:
           -keystore release.keystore \
           -storepass ${{ secrets.SIGNING_KEYSTORE_PASSWORD }} \
           -keypass ${{ secrets.SIGNING_KEY_PASSWORD }} \
-          -dname "CN=Your Name, OU=Your Team, O=Your Company, L=Your City, S=Your State, C=KR"
+          -dname "CN=channel101, OU=treeentertainment, O=treeentertainment, L=SEOUL, S=SEOUL, C=KR"
 
     - name: Build APK
       run: ./gradlew assembleRelease
 
-    - name: Sign APK
+    - name: Sign APK with apksigner
       run: |
-        jarsigner \
-          -verbose \
-          -sigalg SHA1withRSA \
-          -digestalg SHA1 \
-          -keystore release.keystore \
-          -storepass ${{ secrets.SIGNING_KEYSTORE_PASSWORD }} \
-          -keypass ${{ secrets.SIGNING_KEY_PASSWORD }} \
-          app/build/outputs/apk/release/app-release-unsigned.apk ${{ secrets.SIGNING_KEY_ALIAS }}
+        $ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort -V | tail -n 1)/apksigner sign \
+          --ks release.keystore \
+          --ks-key-alias ${{ secrets.SIGNING_KEY_ALIAS }} \
+          --ks-pass pass:${{ secrets.SIGNING_KEYSTORE_PASSWORD }} \
+          --key-pass pass:${{ secrets.SIGNING_KEY_PASSWORD }} \
+          app/build/outputs/apk/release/app-release-unsigned.apk
 
-    - name: Verify signed APK
+    - name: Verify signed APK with apksigner
       run: |
-        jarsigner -verify app/build/outputs/apk/release/app-release-unsigned.apk
+        $ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort -V | tail -n 1)/apksigner verify \
+          app/build/outputs/apk/release/app-release-unsigned.apk
+
+    - name: Rename signed APK
+      run: mv app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-signed.apk
 
     - name: Upload signed APK
       uses: actions/upload-artifact@v4
       with:
         name: app-release-apk
-        path: app/build/outputs/apk/release/app-release-unsigned.apk
+        path: app/build/outputs/apk/release/app-release-signed.apk
