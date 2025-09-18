@@ -33,8 +33,7 @@ import android.hardware.usb.UsbRequest;
 import android.os.Handler;
 import android.util.Log;
 
-import org.acra.ErrorReporter;
-
+import ch.acra.ACRA;
 import com.remoteyourcam.usb.AppConfig;
 import com.remoteyourcam.usb.ptp.commands.CloseSessionCommand;
 import com.remoteyourcam.usb.ptp.commands.Command;
@@ -191,7 +190,7 @@ public abstract class PtpCamera implements Camera {
         }
         if (AppConfig.USE_ACRA) {
             try {
-              ACRA.getErrorReporter().putCustomData("deviceInfo", deviceInfo.toString());
+               ACRA.getErrorReporter().putCustomData("deviceInfo", deviceInfo.toString());
             } catch (Throwable e) {
                 // no fail
             }
