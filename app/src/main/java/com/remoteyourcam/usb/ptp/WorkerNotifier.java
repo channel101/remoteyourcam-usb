@@ -1,23 +1,9 @@
-/**
- * Copyright 2013 Nils Assbeck, Guersel Ayaz and Michael Zoech
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.remoteyourcam.usb.ptp;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.app.Notification;
+import androidx.core.app.NotificationCompat;
 
 import com.remoteyourcam.usb.R;
 import com.remoteyourcam.usb.util.NotificationIds;
@@ -27,14 +13,19 @@ public class WorkerNotifier implements Camera.WorkerListener {
     private final NotificationManager notificationManager;
     private final Notification notification;
     private final int uniqueId;
+    private static final String CHANNEL_ID = "worker_channel";
 
     public WorkerNotifier(Context context) {
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notification = new Notification(R.drawable.icon, context.getString(R.string.worker_ticker),
-                System.currentTimeMillis());
-        notification
-                .setLatestEventInfo(context.getApplicationContext(), context.getString(R.string.worker_content_title),
-                        context.getString(R.string.worker_content_text), null);
+        
+        // You should create the notification channel elsewhere if targeting API 26+
+        notification = new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.icon)
+                .setContentTitle(context.getString(R.string.worker_content_title))
+                .setContentText(context.getString(R.string.worker_content_text))
+                .setTicker(context.getString(R.string.worker_ticker))
+                .setAutoCancel(false)
+                .build();
         uniqueId = NotificationIds.getInstance().getUniqueIdentifier(WorkerNotifier.class.getName() + ":running");
     }
 
