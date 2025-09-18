@@ -18,7 +18,7 @@ package com.remoteyourcam.usb.ptp.commands.nikon;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import org.acra.ErrorReporter;
+import ch.acra.reporter.ErrorReporter;
 
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
