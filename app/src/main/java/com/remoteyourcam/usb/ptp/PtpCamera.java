@@ -33,7 +33,8 @@ import android.hardware.usb.UsbRequest;
 import android.os.Handler;
 import android.util.Log;
 
-import ch.acra.ACRA;
+import org.acra.ACRA;
+
 import com.remoteyourcam.usb.AppConfig;
 import com.remoteyourcam.usb.ptp.commands.CloseSessionCommand;
 import com.remoteyourcam.usb.ptp.commands.Command;
